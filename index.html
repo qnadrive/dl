@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Downloading...</title>
     <meta name="referrer" content="no-referrer">
+</head>
+<body>
     <script>
         const params = new URLSearchParams(window.location.search);
         const fileId = params.get('id');
+
         if (fileId) {
-            // পিক্সেলড্রেনকে ধোঁকা দিতে রেফারার ছাড়াই রিডাইরেক্ট করবে
-            window.location.replace("https://pixeldrain.com/api/file/" + fileId);
-        } else {
-            document.body.innerHTML = "No File ID Provided.";
+            // এটি একটি 'Fake' রিকোয়েস্ট তৈরি করবে যা রেফারার পাঠাবে না
+            fetch(`https://pixeldrain.com/api/file/${fileId}`, {
+                method: 'GET',
+                referrerPolicy: 'no-referrer'
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // ফাইলের নাম যা ইচ্ছা দিতে পারেন
+                a.download = `file_${fileId}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(() => {
+                // যদি উপরের পদ্ধতিতে কাজ না হয়, তবে ব্যাকআপ হিসেবে এটি কাজ করবে
+                window.location.href = `https://pixeldrain.com/api/file/${fileId}`;
+            });
         }
     </script>
-</head>
-<body>
-    <p>Redirecting to download...</p>
 </body>
 </html>
