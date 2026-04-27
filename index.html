@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="referrer" content="no-referrer">
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const fileId = params.get('id');
+        if (fileId) {
+            // পিক্সেলড্রেনকে ধোঁকা দিতে রেফারার ছাড়াই রিডাইরেক্ট করবে
+            window.location.replace("https://pixeldrain.com/api/file/" + fileId);
+        } else {
+            document.body.innerHTML = "No File ID Provided.";
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting to download...</p>
+</body>
+</html>
